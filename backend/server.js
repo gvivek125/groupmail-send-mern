@@ -6,12 +6,11 @@ require("dotenv").config();
 const Mail = require("./models/mail");
 
 const app = express();
-
 app.use(cors());
 app.use(express.json());
 
 // MongoDB connect
-mongoose.connect("mongodb://127.0.0.1:27017/bulkmailDB")
+mongoose.connect(process.env.MONGODB_URL)
   .then(() => console.log("MongoDB Connected"))
   .catch((err) => console.log("MongoDB Connection Error:", err));
 
@@ -20,7 +19,7 @@ app.get("/", (req, res) => {
   res.send("Bulk Mail Server Running");
 });
 
-// ✅ Single /send-mails route
+// Single /send-mails route
 app.post("/send-mails", async (req, res) => {
   const { emails, subject, message } = req.body;
 
@@ -33,10 +32,10 @@ app.post("/send-mails", async (req, res) => {
   });
 
   try {
-    // Mail DB la save panrom
+    // Save mail to DB
     await Mail.create({ emails, subject, message });
 
-    // Mail send panrom
+    // Send mails
     for (let email of emails) {
       await transporter.sendMail({
         from: process.env.EMAIL,
