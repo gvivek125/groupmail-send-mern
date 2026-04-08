@@ -3,23 +3,35 @@ const express = require("express");
 const cors = require("cors");
 const nodemailer = require("nodemailer");
 require("dotenv").config();
+
 const Mail = require("./models/mail");
 
 const app = express();
-app.use(cors());
+
+
+// ✅ CORS (Frontend URL allow)
+app.use(cors({
+  origin: "https://groupmail-send-mern.vercel.app",
+  methods: ["GET", "POST"],
+}));
+
+// ✅ JSON parse
 app.use(express.json());
 
-// MongoDB connect
+
+// ✅ MongoDB connect
 mongoose.connect(process.env.MONGODB_URL)
   .then(() => console.log("MongoDB Connected"))
   .catch((err) => console.log("MongoDB Connection Error:", err));
 
-// Root route
+
+// ✅ Root route
 app.get("/", (req, res) => {
-  res.send("Bulk Mail Server Running");
+  res.send("Bulk Mail Server Running 🚀");
 });
 
-// Single /send-mails route
+
+// ✅ Send Mail Route
 app.post("/send-mails", async (req, res) => {
   const { emails, subject, message } = req.body;
 
@@ -46,13 +58,17 @@ app.post("/send-mails", async (req, res) => {
     }
 
     res.send("Emails sent and saved successfully ✅");
+
   } catch (error) {
     console.log(error);
-    res.status(500).send("Error sending mails");
+    res.status(500).send("Error sending mails ❌");
   }
 });
 
-// Server listen
-app.listen(5000, () => {
-  console.log("Server running on port 5000");
+
+// ✅ PORT (Render compatible 🔥)
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
