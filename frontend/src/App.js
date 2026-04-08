@@ -10,7 +10,8 @@ function App() {
     const emailList = emails.split(",").map(email => email.trim());
 
     try {
-      await axios.post("http://localhost:5000/send-mails", {
+      // await axios.post("http://localhost:5000/send-mails", {
+      await axios.post("https://groupmail-send-mern.onrender.com/send-mails", {
         emails: emailList,
         subject,
         message,
